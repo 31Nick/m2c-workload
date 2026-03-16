@@ -1,3 +1,11 @@
+export type CurrencyExchangeRate = {
+  base_currency: string;
+  target_currency: string;
+  rate: number;
+  change_percent: number;
+  last_updated: string;
+};
+
 export type StockOverview = {
   symbol: string;
   company_name: string;

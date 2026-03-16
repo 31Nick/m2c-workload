@@ -22,6 +22,14 @@ class Settings(BaseSettings):
     ]
     history_period: str = "1mo"
     history_interval: str = "1d"
+    forex_pairs: list[str] = [
+        "EURUSD=X",
+        "GBPUSD=X",
+        "USDJPY=X",
+        "USDCHF=X",
+        "AUDUSD=X",
+        "USDCAD=X",
+    ]
     static_dir: Path = Path(__file__).resolve().parent / "static"
 
     model_config = SettingsConfigDict(
