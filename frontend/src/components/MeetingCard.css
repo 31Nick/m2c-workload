@@ -1,0 +1,69 @@
+.meeting-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+  transition: box-shadow 0.2s;
+}
+
+.meeting-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.meeting-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.meeting-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-decoration: none;
+}
+
+.meeting-card-title:hover {
+  color: #0ea5e9;
+}
+
+.meeting-card-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.meeting-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.83rem;
+  color: #64748b;
+  margin-bottom: 0.8rem;
+}
+
+.meeting-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  transition: opacity 0.2s;
+}
+
+.btn:hover { opacity: 0.85; }
+
+.btn-sm { padding: 0.3rem 0.75rem; font-size: 0.8rem; }
+
+.btn-primary { background: #0ea5e9; color: #fff; }
+.btn-secondary { background: #e2e8f0; color: #1e293b; }
+.btn-danger { background: #ef4444; color: #fff; }
