@@ -9,7 +9,7 @@ export function StockHero({ generatedAt, averageChangePercent }: StockHeroProps)
   return (
     <section className="hero-card">
       <div>
-        <span className="eyebrow">Azure-ready broker console</span>
+        <span className="eyebrow">Tech Stocks Broker Console</span>
         <h1>Tech stocks command center</h1>
         <p>
           Track the top ten tech names in a single premium dashboard with live snapshots,
