@@ -106,7 +106,10 @@ function App() {
           setSelectedMetric(names[0]);
         }
       })
-      .catch(() => {});
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : 'Failed to load metric names';
+        setError(msg);
+      });
   }, []);
 
   const loadData = useCallback(

@@ -1,7 +1,14 @@
 import { LRUCache } from 'lru-cache';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const cache = new LRUCache<string, any>({
+interface CachedMetricsResult {
+  data: { timestamp: string; value: number; min: number; max: number; count: number }[];
+  metric_name: string;
+  granularity: string;
+  start: string;
+  end: string;
+}
+
+const cache = new LRUCache<string, CachedMetricsResult>({
   max: 500,
   ttl: 5 * 60 * 1000, // 5 minutes
 });
@@ -15,11 +22,11 @@ export function buildCacheKey(
   return `${granularity}:${metricName}:${start}:${end}`;
 }
 
-export function getCache<T>(key: string): T | undefined {
-  return cache.get(key) as T | undefined;
+export function getCache(key: string): CachedMetricsResult | undefined {
+  return cache.get(key);
 }
 
-export function setCache<T>(key: string, value: T): void {
+export function setCache(key: string, value: CachedMetricsResult): void {
   cache.set(key, value);
 }
 

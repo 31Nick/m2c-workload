@@ -14,7 +14,7 @@ export interface MetricDataPoint {
 }
 
 export interface MetricsResponse {
-  metric: string;
+  metric_name: string;
   granularity: GranularityType;
   data: MetricDataPoint[];
   previousPeriod?: {
@@ -26,14 +26,15 @@ export interface MetricsResponse {
 }
 
 export interface IngestPayload {
-  metric: string;
+  metric_name: string;
   value: number;
   timestamp?: string;
+  tags?: Record<string, unknown>;
 }
 
 export async function fetchMetricNames(): Promise<string[]> {
-  const res = await axios.get<string[]>(`${BASE_URL}/api/metrics/names`);
-  return res.data;
+  const res = await axios.get<{ names: string[] }>(`${BASE_URL}/api/metrics/names`);
+  return res.data.names;
 }
 
 export async function fetchMetrics(params: {
@@ -42,10 +43,17 @@ export async function fetchMetrics(params: {
   start?: string;
   end?: string;
 }): Promise<MetricsResponse> {
-  const res = await axios.get<MetricsResponse>(`${BASE_URL}/api/metrics`, { params });
+  const res = await axios.get<MetricsResponse>(`${BASE_URL}/api/metrics`, {
+    params: {
+      metric_name: params.metric,
+      granularity: params.granularity,
+      start: params.start,
+      end: params.end,
+    },
+  });
   return res.data;
 }
 
 export async function ingestMetric(data: IngestPayload): Promise<void> {
-  await axios.post(`${BASE_URL}/api/metrics`, data);
+  await axios.post(`${BASE_URL}/api/metrics/ingest`, data);
 }
