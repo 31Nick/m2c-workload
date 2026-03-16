@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface SparklineChartProps {
@@ -11,7 +12,11 @@ interface SparklineChartProps {
 
 export default function SparklineChart({ data, isPositive, width = 120, height = 50 }: SparklineChartProps) {
   const color = isPositive ? '#22c55e' : '#ef4444';
-  const gradientId = `gradient-${isPositive ? 'pos' : 'neg'}-${Math.random().toString(36).slice(2, 7)}`;
+  const gradientId = useMemo(
+    () => `gradient-${isPositive ? 'pos' : 'neg'}-${Math.random().toString(36).slice(2, 7)}`,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const chartData = data.map((value, index) => ({ index, value }));
 

@@ -30,11 +30,13 @@ function generateSparkline(price: number, previousClose: number): number[] {
   const points: number[] = [];
   let current = previousClose;
   for (let i = 0; i < 10; i++) {
-    current = current + (price - previousClose) / 10 + current * 0.008 * (Math.random() * 2 - 1);
+    current = current + (price - previousClose) / 10 + current * SPARKLINE_VOLATILITY * (Math.random() * 2 - 1);
     points.push(Math.round(current * 100) / 100);
   }
   return points;
 }
+
+const SPARKLINE_VOLATILITY = 0.008; // ±0.8% random variation per step
 
 async function fetchFinnhubQuote(ticker: string, apiKey: string): Promise<{ c: number; pc: number; h: number; l: number; o: number; v: number } | null> {
   try {

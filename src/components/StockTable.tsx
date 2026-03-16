@@ -81,7 +81,7 @@ export default function StockTable({ stocks }: StockTableProps) {
             <th className="text-right px-4 py-3 text-gray-500 font-medium">Open</th>
             <th className="text-right px-4 py-3 text-gray-500 font-medium">High</th>
             <th className="text-right px-4 py-3 text-gray-500 font-medium">Low</th>
-            <th className="text-right px-4 py-3 text-gray-500 font-medium whitespace-nowrap">7D Trend</th>
+            <th className="text-right px-4 py-3 text-gray-500 font-medium whitespace-nowrap">Trend</th>
           </tr>
         </thead>
         <tbody>

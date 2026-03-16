@@ -150,8 +150,7 @@ export default function Dashboard() {
       {/* Footer */}
       <footer className="border-t border-gray-800/60 mt-12 py-6">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-gray-600">
-          Data provided for informational purposes only. Not financial advice.
-          {!process.env.NEXT_PUBLIC_HAS_API_KEY && ' · Using simulated data'}
+          Data provided for informational purposes only. Not financial advice. · Using simulated data
         </div>
       </footer>
     </div>
