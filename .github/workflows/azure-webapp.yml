@@ -61,25 +61,18 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Ensure deployment defaults
-        shell: bash
-        run: |
-          echo "RESOURCE_GROUP=${AZURE_RESOURCE_GROUP:-m2c-workload-rg}" >> "$GITHUB_ENV"
-          echo "LOCATION=${AZURE_LOCATION:-eastus2}" >> "$GITHUB_ENV"
-          echo "APP_NAME_PREFIX=${AZURE_APP_NAME_PREFIX:-m2cstocks}" >> "$GITHUB_ENV"
-
       - name: Create or update resource group
-        run: az group create --name "$RESOURCE_GROUP" --location "$LOCATION"
+        run: az group create --name "$AZURE_RESOURCE_GROUP" --location "$AZURE_LOCATION"
 
       - name: Deploy Azure infrastructure
         id: infra
         shell: bash
         run: |
           OUTPUTS=$(az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
             --name "m2c-${GITHUB_RUN_NUMBER}" \
             --template-file infra/main.bicep \
-            --parameters location="$LOCATION" appNamePrefix="$APP_NAME_PREFIX" \
+            --parameters location="$AZURE_LOCATION" appNamePrefix="$AZURE_APP_NAME_PREFIX" \
             --query properties.outputs \
             --output json)
 
