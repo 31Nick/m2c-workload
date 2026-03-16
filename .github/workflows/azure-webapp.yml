@@ -1,0 +1,96 @@
+name: Azure Web App CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: azure-webapp-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_APP_NAME_PREFIX: ${{ vars.AZURE_APP_NAME_PREFIX }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Copy frontend build into backend static directory
+        run: |
+          rm -rf backend/app/static/*
+          cp -R frontend/dist/. backend/app/static/
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install backend dependencies
+        run: python -m pip install -r backend/requirements.txt
+
+      - name: Sign in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Ensure deployment defaults
+        shell: bash
+        run: |
+          echo "RESOURCE_GROUP=${AZURE_RESOURCE_GROUP:-m2c-workload-rg}" >> "$GITHUB_ENV"
+          echo "LOCATION=${AZURE_LOCATION:-eastus2}" >> "$GITHUB_ENV"
+          echo "APP_NAME_PREFIX=${AZURE_APP_NAME_PREFIX:-m2cstocks}" >> "$GITHUB_ENV"
+
+      - name: Create or update resource group
+        run: az group create --name "$RESOURCE_GROUP" --location "$LOCATION"
+
+      - name: Deploy Azure infrastructure
+        id: infra
+        shell: bash
+        run: |
+          OUTPUTS=$(az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "m2c-${GITHUB_RUN_NUMBER}" \
+            --template-file infra/main.bicep \
+            --parameters location="$LOCATION" appNamePrefix="$APP_NAME_PREFIX" \
+            --query properties.outputs \
+            --output json)
+
+          echo "WEB_APP_NAME=$(echo "$OUTPUTS" | jq -r '.webAppName.value')" >> "$GITHUB_ENV"
+          echo "WEB_APP_HOSTNAME=$(echo "$OUTPUTS" | jq -r '.webAppHostName.value')" >> "$GITHUB_ENV"
+
+      - name: Deploy application package
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.WEB_APP_NAME }}
+          package: backend
+
+      - name: Show deployment URL
+        run: echo "https://${WEB_APP_HOSTNAME}"

@@ -1,0 +1,10 @@
+name: m2c-workload
+infra:
+  provider: bicep
+  path: infra
+services:
+  web:
+    project: backend
+    language: py
+    host: appservice
+    dist: .

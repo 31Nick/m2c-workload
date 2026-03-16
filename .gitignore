@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node
+frontend/node_modules/
+frontend/.vite/
+
+# Build output
+backend/app/static/*
+!backend/app/static/.gitkeep
+
+# Azure
+.azure/*/env.json
+.azure/*/.env
