@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.services.market_data import get_dashboard_data, get_stock_history
+from app.services.forex_data import get_forex_rates
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)
@@ -48,6 +49,14 @@ def stock_history(symbol: str):
     data = get_stock_history(symbol)
     if not data.points:
         raise HTTPException(status_code=404, detail=f"No history found for {symbol}.")
+    return data
+
+
+@app.get(f"{settings.api_prefix}/forex/rates")
+def forex_rates():
+    data = get_forex_rates()
+    if not data:
+        raise HTTPException(status_code=503, detail="Unable to retrieve forex rate data.")
     return data
 
 

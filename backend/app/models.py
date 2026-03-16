@@ -3,6 +3,14 @@ from datetime import date
 from pydantic import BaseModel, Field
 
 
+class CurrencyExchangeRate(BaseModel):
+    base_currency: str
+    target_currency: str
+    rate: float
+    change_percent: float
+    last_updated: str
+
+
 class StockOverview(BaseModel):
     symbol: str
     company_name: str

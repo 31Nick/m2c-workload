@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { CurrencyRatesPanel } from './components/CurrencyRatesPanel';
 import { PerformanceTable } from './components/PerformanceTable';
 import { PriceHistoryChart } from './components/PriceHistoryChart';
 import { StockGrid } from './components/StockGrid';
 import { StockHero } from './components/StockHero';
-import type { DashboardResponse, StockHistory, StockOverview } from './types';
+import type { CurrencyExchangeRate, DashboardResponse, StockHistory, StockOverview } from './types';
 
 const compactFormatter = new Intl.NumberFormat('en-US', {
   notation: 'compact',
@@ -18,6 +19,8 @@ function App() {
   const [selectedSymbol, setSelectedSymbol] = useState('AAPL');
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [forexRates, setForexRates] = useState<CurrencyExchangeRate[]>([]);
+  const [forexLoading, setForexLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,6 +46,26 @@ function App() {
     };
 
     void loadDashboard();
+  }, []);
+
+  useEffect(() => {
+    const loadForex = async () => {
+      try {
+        setForexLoading(true);
+        const response = await fetch('/api/forex/rates');
+        if (!response.ok) {
+          throw new Error('Unable to load forex rate data.');
+        }
+        const data = (await response.json()) as CurrencyExchangeRate[];
+        setForexRates(data);
+      } catch {
+        setForexRates([]);
+      } finally {
+        setForexLoading(false);
+      }
+    };
+
+    void loadForex();
   }, []);
 
   useEffect(() => {
@@ -179,6 +202,8 @@ function App() {
         </div>
 
         <PerformanceTable stocks={sortedStocks} />
+
+        <CurrencyRatesPanel rates={forexRates} loading={forexLoading} />
       </main>
     </div>
   );
