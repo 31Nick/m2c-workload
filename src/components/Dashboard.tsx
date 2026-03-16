@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { StockQuote, ViewMode } from '@/types/stock';
+import { StockQuote, StocksResponse, ViewMode } from '@/types/stock';
 import StockCard from './StockCard';
 import StockTable from './StockTable';
 import LoadingSpinner from './LoadingSpinner';
@@ -20,14 +20,16 @@ export default function Dashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState(POLL_INTERVAL);
+  const [dataSource, setDataSource] = useState<StocksResponse['dataSource'] | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
       setError(null);
       const res = await fetch('/api/stocks');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data: StockQuote[] = await res.json();
-      setStocks(data);
+      const data: StocksResponse = await res.json();
+      setStocks(data.stocks);
+      setDataSource(data.dataSource);
       setLastUpdated(new Date());
       setCountdown(POLL_INTERVAL);
     } catch (err) {
@@ -150,7 +152,12 @@ export default function Dashboard() {
       {/* Footer */}
       <footer className="border-t border-gray-800/60 mt-12 py-6">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-gray-600">
-          Data provided for informational purposes only. Not financial advice. · Using simulated data
+          Data provided for informational purposes only. Not financial advice.
+          {dataSource && (
+            <span className="ml-1">
+              · {dataSource === 'live' ? 'Live data via Finnhub' : 'Using simulated data'}
+            </span>
+          )}
         </div>
       </footer>
     </div>

@@ -3,8 +3,8 @@ import { fetchStocks } from '@/lib/stockApi';
 
 export async function GET() {
   try {
-    const stocks = await fetchStocks();
-    return NextResponse.json(stocks, {
+    const { stocks, dataSource } = await fetchStocks();
+    return NextResponse.json({ stocks, dataSource }, {
       headers: {
         'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30',
       },

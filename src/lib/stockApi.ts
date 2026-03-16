@@ -1,4 +1,4 @@
-import { StockQuote } from '@/types/stock';
+import { StockQuote, StocksResponse } from '@/types/stock';
 import { getMockStocks } from './mockData';
 
 const COMPANIES: Record<string, { name: string; sector: string }> = {
@@ -26,6 +26,8 @@ const COMPANIES: Record<string, { name: string; sector: string }> = {
 
 const TICKERS = Object.keys(COMPANIES);
 
+const SPARKLINE_VOLATILITY = 0.008; // ±0.8% random variation per step
+
 function generateSparkline(price: number, previousClose: number): number[] {
   const points: number[] = [];
   let current = previousClose;
@@ -35,8 +37,6 @@ function generateSparkline(price: number, previousClose: number): number[] {
   }
   return points;
 }
-
-const SPARKLINE_VOLATILITY = 0.008; // ±0.8% random variation per step
 
 async function fetchFinnhubQuote(ticker: string, apiKey: string): Promise<{ c: number; pc: number; h: number; l: number; o: number; v: number } | null> {
   try {
@@ -51,11 +51,11 @@ async function fetchFinnhubQuote(ticker: string, apiKey: string): Promise<{ c: n
   }
 }
 
-export async function fetchStocks(): Promise<StockQuote[]> {
+export async function fetchStocks(): Promise<StocksResponse> {
   const apiKey = process.env.FINNHUB_API_KEY;
 
   if (!apiKey) {
-    return getMockStocks();
+    return { stocks: getMockStocks(), dataSource: 'simulated' };
   }
 
   try {
@@ -88,8 +88,11 @@ export async function fetchStocks(): Promise<StockQuote[]> {
     );
 
     const valid = results.filter((r): r is StockQuote => r !== null);
-    return valid.length > 0 ? valid : getMockStocks();
+    if (valid.length > 0) {
+      return { stocks: valid, dataSource: 'live' };
+    }
+    return { stocks: getMockStocks(), dataSource: 'simulated' };
   } catch {
-    return getMockStocks();
+    return { stocks: getMockStocks(), dataSource: 'simulated' };
   }
 }

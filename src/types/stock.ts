@@ -20,6 +20,11 @@ export interface StockQuote {
   sparkline: number[]; // 10 data points for mini chart
 }
 
+export interface StocksResponse {
+  stocks: StockQuote[];
+  dataSource: 'live' | 'simulated';
+}
+
 export type SortField = 'name' | 'price' | 'change' | 'changePercent' | 'volume';
 export type SortDirection = 'asc' | 'desc';
 export type ViewMode = 'cards' | 'table';
