@@ -30,8 +30,8 @@ export function PriceHistoryChart({ history, selectedSymbol }: PriceHistoryChart
             <AreaChart data={history.points}>
               <defs>
                 <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#42d392" stopOpacity={0.6} />
-                  <stop offset="95%" stopColor="#42d392" stopOpacity={0.04} />
+                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.6} />
+                  <stop offset="95%" stopColor="#f97316" stopOpacity={0.04} />
                 </linearGradient>
               </defs>
               <CartesianGrid stroke="rgba(148, 163, 184, 0.12)" vertical={false} />
@@ -59,7 +59,7 @@ export function PriceHistoryChart({ history, selectedSymbol }: PriceHistoryChart
               <Area
                 type="monotone"
                 dataKey="close"
-                stroke="#42d392"
+                stroke="#f97316"
                 strokeWidth={3}
                 fill="url(#priceGradient)"
               />
