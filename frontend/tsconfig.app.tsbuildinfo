@@ -1,1 +1,1 @@
-{"root":["./src/App.tsx","./src/main.tsx","./src/types.ts","./src/components/CurrencyRatesPanel.tsx","./src/components/PerformanceTable.tsx","./src/components/PriceHistoryChart.tsx","./src/components/StockGrid.tsx","./src/components/StockHero.tsx"],"errors":true,"version":"5.9.3"}
+{"root":["./src/App.tsx","./src/main.tsx","./src/types.ts","./src/components/CurrencyRatesPanel.tsx","./src/components/PerformanceTable.tsx","./src/components/PriceHistoryChart.tsx","./src/components/StockGrid.tsx","./src/components/StockHero.tsx"],"version":"5.9.3"}
